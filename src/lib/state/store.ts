@@ -8,8 +8,10 @@ type Theme = [string, string]
 const theme = persist(writable<Theme>(["D", "U"]), createLocalStorage(true), "theme")
 const scheme = persist(writable<boolean>(true), createLocalStorage(true), "scheme")
 const user = derived(page, (v) => {
-    console.log(v)
-    return v
+    return {
+        ...v.data._lucia.user,
+        session: v.data.session.sessionId
+    }
 })
 
 function appName(t: Theme) {
@@ -27,5 +29,6 @@ scheme.subscribe((s) => {
 export {
     theme,
     scheme,
+    user,
     appName
 }
