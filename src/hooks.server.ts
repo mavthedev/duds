@@ -4,7 +4,6 @@ import { disableWarnings } from "@macfja/svelte-persistent-store";
 import { sequence } from "@sveltejs/kit/hooks";
 import type { RequestEvent } from '@sveltejs/kit';
 import type { Session, User } from "lucia-auth";
-
 disableWarnings()
 
 function handleHooksHeader(header: string, auth: Auth) {
@@ -49,4 +48,5 @@ function handleHooksHeader(header: string, auth: Auth) {
     }
 }
 
+// @ts-ignore
 export const handle = sequence(handleHooks(auth), handleHooksHeader('x-lucia-auth', auth));

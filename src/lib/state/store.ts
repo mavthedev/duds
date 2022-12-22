@@ -1,13 +1,18 @@
-import { get, writable } from 'svelte/store'
+import { derived, get, writable } from 'svelte/store'
 import { createLocalStorage, persist } from '@macfja/svelte-persistent-store'
 import { browser } from '$app/environment'
+import { page } from '$app/stores'
 
 type Theme = [string, string]
 
 const theme = persist(writable<Theme>(["D", "U"]), createLocalStorage(true), "theme")
 const scheme = persist(writable<boolean>(true), createLocalStorage(true), "scheme")
+const user = derived(page, (v) => {
+    console.log(v)
+    return v
+})
 
-function name(t: Theme) {
+function appName(t: Theme) {
     t // useless param to force svelte to be reactive
     return `${get(theme)[0]}${get(theme)[1]}${get(theme)[0]}`
 }
@@ -22,5 +27,5 @@ scheme.subscribe((s) => {
 export {
     theme,
     scheme,
-    name
+    appName
 }
