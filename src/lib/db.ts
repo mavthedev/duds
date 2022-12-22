@@ -1,3 +1,4 @@
+import { PRIVATE_MONGO } from "$env/static/private";
 import mongoose from "mongoose";
 
 const User = new mongoose.Schema({
@@ -16,8 +17,13 @@ const User = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    username: {
+        type: String,
+        required: true,
+        unique: true
+    }
 }, { _id: false, virtuals: {
-    levels: {
+    level: {
         get() {
             return getLevel(this.exp)
         }
@@ -51,9 +57,13 @@ function getLevel(points: number): number {
 }
 
 const db = {
-    User: mongoose.model("User", User),
-    Session: mongoose.model("Session", Session)
+    User: mongoose.models.user || mongoose.model("user", User),
+    Session: mongoose.models.session || mongoose.model("session", Session)
 }
+
+mongoose.connect(PRIVATE_MONGO, {
+    dbName: "db"
+})
 
 export {
     getLevel,

@@ -7,7 +7,8 @@ type Theme = [string, string]
 const theme = persist(writable<Theme>(["D", "U"]), createLocalStorage(true), "theme")
 const scheme = persist(writable<boolean>(true), createLocalStorage(true), "scheme")
 
-function name() {
+function name(t: Theme) {
+    t // useless param to force svelte to be reactive
     return `${get(theme)[0]}${get(theme)[1]}${get(theme)[0]}`
 }
 
