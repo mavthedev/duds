@@ -1,5 +1,5 @@
 import { PRIVATE_MONGO } from "$env/static/private";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const User = new mongoose.Schema({
     _id: {
@@ -48,6 +48,27 @@ const Session = new mongoose.Schema({
     }
 }, { _id: false })
 
+const GameSubBlock = new mongoose.Schema({
+    //@ts-ignore
+    player: { ref: "user", type: String, required: function() { return this.filled }},
+    filled: { type: Boolean, default: false },
+    data: {
+        type: Number,
+        enum: [0, 1, 2], // 0 Empty, 1 First letter, 2 Second letter
+        default: 0
+    }
+})
+
+const Game = new mongoose.Schema({ 
+    _id: {
+        type: String
+    },
+    owner: { ref: "user", type: String, required: true },
+    opponent: { ref: "user", type: String, required: false },
+    isPlaying: { type: Boolean, default: false },
+    blocks: { type: [{ type: GameSubBlock }], default: [{}, {}, {}, {}, {}, {}, {}, {}, {}]}
+})
+
 function getPoints(level: number) {
   return 20*(level-1)*(level+3);
 }
@@ -58,7 +79,8 @@ function getLevel(points: number): number {
 
 const db = {
     User: mongoose.models.user || mongoose.model("user", User),
-    Session: mongoose.models.session || mongoose.model("session", Session)
+    Session: mongoose.models.session || mongoose.model("session", Session),
+    Game: mongoose.models.game || mongoose.model("game", Game),
 }
 
 mongoose.set("strictQuery", false)
