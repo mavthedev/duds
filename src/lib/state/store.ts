@@ -1,16 +1,19 @@
-import { derived, get, writable } from 'svelte/store'
+import { derived, get, writable, type Readable } from 'svelte/store'
 import { createLocalStorage, persist } from '@macfja/svelte-persistent-store'
 import { browser } from '$app/environment'
 import { page } from '$app/stores'
+import type { UserData } from 'lucia-auth'
 
 type Theme = [string, string]
 
 const theme = persist(writable<Theme>(["D", "U"]), createLocalStorage(true), "theme")
 const scheme = persist(writable<boolean>(true), createLocalStorage(true), "scheme")
-const user = derived(page, (v) => {
+const user: Readable<{ 
+    session: string,
+} & UserData> = derived(page, (v) => {
     return {
         ...v.data._lucia.user,
-        session: v.data.session.sessionId
+        session: v.data.session?.sessionId
     }
 })
 

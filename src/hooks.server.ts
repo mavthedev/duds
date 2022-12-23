@@ -2,7 +2,7 @@ import { auth, type Auth } from "$lib/auth";
 import { handleHooks } from "@lucia-auth/sveltekit";
 import { disableWarnings } from "@macfja/svelte-persistent-store";
 import { sequence } from "@sveltejs/kit/hooks";
-import type { RequestEvent } from '@sveltejs/kit';
+import { type RequestEvent, error } from '@sveltejs/kit';
 import type { Session, User } from "lucia-auth";
 disableWarnings()
 
@@ -42,8 +42,14 @@ function handleHooksHeader(header: string, auth: Auth) {
 				}
 			});
 			return getSessionUserPromise;
-		};
+		}
 
+        if(!event.route.id) return await resolve(event)
+        if(event.route.id.startsWith('/api')) {
+            const s = await event.locals.HvalidateUser()
+            if(!s.session) throw error(401, "User must be logged in to make API calls")
+            event.locals.state = s
+        }
         return await resolve(event)
     }
 }
