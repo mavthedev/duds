@@ -5,6 +5,6 @@
 </script>
 <AppBar>
 	<svelte:fragment slot="lead">{appName($theme)}</svelte:fragment>
-	
+	MIDDLE
 	<svelte:fragment slot="trail"><Lightswitch /></svelte:fragment>
 </AppBar>

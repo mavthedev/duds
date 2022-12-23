@@ -45,9 +45,9 @@ function handleHooksHeader(header: string, auth: Auth) {
 
         if(!event.route.id) return await resolve(event)
         if(event.route.id.startsWith('/api')) {
-            const s = await event.locals.HvalidateUser()
-            if(!s.session) throw error(401, "User must be logged in to make API calls")
-            event.locals.state = s
+            const state = await event.locals.HvalidateUser()
+            if(!state.session) throw error(401, "User must be logged in to make API calls")
+            event.locals.state = state
         }
         return await resolve(event)
     }

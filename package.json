@@ -31,6 +31,8 @@
   "dependencies": {
     "@lucia-auth/adapter-mongoose": "^0.1.5",
     "@lucia-auth/sveltekit": "^0.5.1",
+    "ably": "^1.2.34",
+    "ascii-text-generator": "^1.0.5",
     "lucia-auth": "^0.3.3",
     "mongoose": "^6.8.1"
   }

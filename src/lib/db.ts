@@ -17,18 +17,35 @@ const User = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    level: {
+        type: Number,
+        default: 1
+    },
     username: {
         type: String,
         required: true,
         unique: true
     }
-}, { _id: false, virtuals: {
-    level: {
-        get() {
-            return getLevel(this.exp)
-        }
+}, { _id: false }).pre(/^find/, async function() {
+    const data = await this.exec()
+    console.log(data)
+    const { exp, level } = levelProcess(this.exp, this.level)
+    this.exp = exp
+    this.level = level
+    this.save()
+})
+
+function levelProcess(exp: number, level: number): { exp: number, level: number } {
+    // Recursion yay
+    console.log(exp, level, getPoints(level + 1))
+    if(level === 0) return levelProcess(exp, level + 1)
+    if(exp >= getPoints(level + 1)) {
+        console.log("recursed")
+        return { exp: exp - getPoints(level + 1), level: level + 1 } 
+    } else {
+        return { exp, level }
     }
-} })
+}
 
 const Session = new mongoose.Schema({
     _id: {
@@ -66,11 +83,11 @@ const Game = new mongoose.Schema({
     owner: { ref: "user", type: String, required: true },
     opponent: { ref: "user", type: String, required: false },
     isPlaying: { type: Boolean, default: false },
-    blocks: { type: [{ type: GameSubBlock }], default: [{}, {}, {}, {}, {}, {}, {}, {}, {}]}
-})
+    blocks: { type: [{ type: GameSubBlock }], default: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}] }
+}, { query: { lobbyGames: function() { return this.find({ isPlaying: false, opponent: null }) } } })
 
 function getPoints(level: number) {
-  return 20*(level-1)*(level+3);
+  return 20*(level-1)*(level+3)
 }
 
 function getLevel(points: number): number {

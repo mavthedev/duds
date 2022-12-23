@@ -1,17 +1,19 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
 
-import type { Session } from "lucia-auth";
+type State = {
+	session: import('lucia-auth').Session,
+	user: import('lucia-auth').UserData
+}
 
-// and what to do when importing types
 declare namespace App {
 	interface Locals {
 		validate: import("@lucia-auth/sveltekit").Validate;
 		validateUser: import("@lucia-auth/sveltekit").ValidateUser;
 		setSession: import("@lucia-auth/sveltekit").SetSession;
-		Hvalidate: import("@lucia-auth/adapter-mongoose").Validate;
+		Hvalidate: import("@lucia-auth/sveltekit").Validate;
 		HvalidateUser: import("@lucia-auth/sveltekit").ValidateUser;
-		state: Session | null;
+		state: State | null;
 	}
 	// interface Platform {}
 	interface PrivateEnv {
@@ -29,6 +31,8 @@ declare namespace Lucia {
 	type Auth = import("./lucia.js").Auth;
 	type UserAttributes = {
 		username: string,
-		_id: string
+		_id: string,
+		level: number,
+		exp: number
 	};
 }
