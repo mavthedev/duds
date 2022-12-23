@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 
 export const auth = lucia({
     adapter: adapter(mongoose),
-    env: import.meta.env.PROD?"PROD":"DEV",
+    env: import.meta.env.PROD? "PROD" : "DEV",
     transformUserData: (userData) => {
         console.log(userData)
         return userData

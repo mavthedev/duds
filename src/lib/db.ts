@@ -61,6 +61,8 @@ const db = {
     Session: mongoose.models.session || mongoose.model("session", Session)
 }
 
+mongoose.set("strictQuery", false)
+
 mongoose.connect(PRIVATE_MONGO, {
     dbName: "db"
 })
