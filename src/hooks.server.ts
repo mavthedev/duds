@@ -5,7 +5,6 @@ import { sequence } from "@sveltejs/kit/hooks";
 import { type RequestEvent, error } from '@sveltejs/kit';
 import type { Session, User } from "lucia-auth";
 disableWarnings()
-
 function handleHooksHeader(header: string, auth: Auth) {
     return async ({ event, resolve }: { event: RequestEvent; resolve: (event: RequestEvent, options?: { transformPageChunk: (data: { html: string }) => string; }) => Promise<Response> | Response }) => {
         let getSessionPromise: Promise<Session | null> | undefined;
